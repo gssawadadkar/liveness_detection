@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liveness Verification</title>
+    <!-- Assuming you have Bootstrap CSS for styling -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Liveness Verification</h2>
+    <form id="verificationForm">
+        <div class="form-group">
+            <label for="empCode">Employee Code:</label>
+            <input type="text" class="form-control" id="empCode" name="empCode" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Start Verification</button>
+    </form>
+    <div id="resultMessage" class="mt-3"></div>
+</div>
+
+<!-- Assuming you have jQuery for AJAX requests -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#verificationForm').submit(function (event) {
+            event.preventDefault(); // Prevent the default form submission
+            var empCode = $('#empCode').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/liveness_verification',
+                contentType: 'application/json',
+                data: JSON.stringify({ empCode: empCode }),
+                success: function (response) {
+                    // Handle successful response
+                    $('#resultMessage').html('<div class="alert alert-success" role="alert">Verification Successful!</div>');
+                    console.log(response);
+                    // Display additional information if needed
+                    $('#resultMessage').append('<p>Employee Name: ' + response.employee_name + '</p>');
+                    $('#resultMessage').append('<img src="' + response.image_path + '" alt="Verified Image">');
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'An error occurred';
+                    $('#resultMessage').html('<div class="alert alert-danger" role="alert">' + errorMessage + '</div>');
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

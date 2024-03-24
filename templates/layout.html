@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liveness Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        input {
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        p {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    {% block content %}
+        {% if page == 'index' %}
+            <h1>Liveness Detection</h1>
+            
+            <form action="/liveness_verification" method="post">
+                <label for="EmpCode">Employee Code:</label>
+                <input type="text" id="EmpCode" name="EmpCode" required>
+                <button type="submit">Verify Liveness</button>
+            </form>
+        {% elif page == 'result' %}
+            <h1>Liveness Detection Result</h1>
+            
+            <p>{{ result_msg }}</p>
+            
+            <!-- You can add more content or styling as needed -->
+        {% elif page == 'liveness_verification' %}
+            <h1>Liveness Verification</h1>
+            
+            <p>Please perform blinks for liveness verification.</p>
+            
+            <!-- Add your camera feed or any UI elements related to liveness verification here -->
+            
+            <form action="/result" method="get">
+                <input type="hidden" name="result_msg" value="{{ result_msg }}">
+                <button type="submit">View Result</button>
+            </form>
+        {% endif %}
+    {% endblock %}
+</body>
+
+</html>

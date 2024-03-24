@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>:: Welcome to Face Recognition tool :: Powered by PMC ::</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <style>
+            
+*{ margin: 0px; padding: 0px;}
+body{ font-family: "Roboto"; font-size: 14px;}
+.logoWrapper{ margin: -15px  -15px 15px  -15px; display: flex; align-items: center; justify-content: space-between; background: #f5f5f5; padding: 15px;}
+.logo img{ max-height: 110px;}
+.wrapper{ min-height: 100vh; width: 580px; padding: 15px; margin: auto; box-shadow: 0px 0px 2px #ccc;}
+.details{ padding: 15px 0px;}
+.details p{ padding-bottom: 15px; margin: 0px;}
+.details p label{ display: inline-block; width: 120px;}
+.instruction{ background: #fbfbfb; padding: 20px; margin: 0px -15px 15px;}
+.instruction h4{ margin-bottom: 15px; font-size: 21px;}
+.instruction ul{ margin: 0px; padding: 0px;}
+.instruction ul li{ display: block; padding-bottom: 25px; position: relative; padding-left: 40px;}
+.instruction ul li span{ color: #fff; font-weight: bold; background-color: #17a2b8; position: absolute; left: 0px; padding: 0px; display: inline-block; width: 30px; height: 30px; margin-right: 15px; text-align: center; line-height: 30px; border-radius: 100%;}
+.logo_desc h3{ font-size: 21px; font-weight: bold;}
+
+#video-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+#video-feed {
+    border: 2px solid #333;
+    width:100%;
+    height:auto;
+}
+</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="logoWrapper">
+            <div class="logo"><img src="./../images/logo.png"></div>
+            <div class="logo_desc">
+                <h3>PMC - Face Recognition Tool</h3>
+                <p><strong>Verification Result</strong></p>
+                <p id="result-status">Status: Verification in Progress</p>
+            </div>
+        </div>
+
+
+
+    <div id="video-container">
+        <img id="video-feed" src="{{ url_for('video_feed') }}" alt="Video Feed">
+        <input type="hidden" id="latitude" name="lat" value="" />
+        <input type="hidden" id="longitude" name="longitude" value="" />
+    </div>
+
+    <div id="result-container">
+        <p id="result-message">Message: Please wait, verification process is going on...</p>
+        <p id="employee-name">Employee Name: --</p>
+        <a href="/" style="display:none" id="restart"><button type="button" class="btn btn-primary">Re-Test</button></a>
+    </div>
+
+    <script>
+        // Add your JavaScript logic here
+
+        if ("geolocation" in navigator) {
+            // Prompt user for permission to access their location
+            navigator.geolocation.watchPosition(
+                // Success callback function
+                function (position) {
+                    // Get the user's latitude and longitude coordinates
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+    
+                    // Update the map with the user's new location
+                    console.log(`Latitude: ${lat}, longitude: ${lng}`);
+    
+                    document.getElementById('latitude').value = lat;
+    
+                    document.getElementById('longitude').value = lng;
+    
+    
+                },
+                // Error callback function
+                function (error) {
+                    // Handle errors, e.g. user denied location sharing permissions
+                    console.error("Error getting user location:", error);
+                }
+            );
+        } else {
+            // Geolocation is not supported by the browser
+            console.error("Geolocation is not supported by this browser.");
+        }
+
+        const resultStatusElement = document.getElementById('result-status');
+        const resultMessageElement = document.getElementById('result-message');
+        const employeeNameElement = document.getElementById('employee-name');
+        var pathname = new URL(window.location).pathname;
+        const ppnoNo = pathname.split("/")?.[2]
+        document.getElementById('restart').href= `/access/${ppnoNo}`
+        function resultFailed() {
+            window.location.href=`/home/${ppnoNo}`
+        }
+
+        function updateResultStatus(result) {
+            resultStatusElement.textContent = `Status: ${result.result_status}`;
+            resultMessageElement.textContent = `Message: ${result.message}`;
+
+            if (result.result_status === 'success') {
+                employeeNameElement.textContent = `Employee Name: ${result.employee_name}`;
+                document.getElementById('restart').style.display = 'block';
+            } else {
+                employeeNameElement.textContent = 'Employee Name: N/A';
+            }
+
+            if(result.result_status === "fail"){
+                document.getElementById('restart').style.display = 'block';
+            }
+
+
+
+            
+        }
+
+        // You might need to use WebSocket or AJAX to dynamically update the result
+        // For simplicity, the following code just checks the result every 5 seconds
+        setInterval(() => {
+            fetch('/result')
+                .then(response => response.json())
+                .then(data => updateResultStatus(data))
+                .catch(error => console.error('Error fetching result:', error));
+        }, 8000);
+
+    
+    </script>
+</body>
+</html>

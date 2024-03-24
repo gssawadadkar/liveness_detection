@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Include Socket.IO JavaScript Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js" integrity="sha512-Hg4eCSh3UJdZ6+oQ6dhO0lRbALm7kcrzURff+vflZzW0I4eV2vj0z+jQfgb8PdndiDK/W4jPDrk+tkOqNbzOcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <h2 class="text-center">Verification Status</h2>
+                <div id="verificationStatus" class="text-center"></div>
+                <!-- Button to start verification -->
+                <button id="startVerificationBtn" class="btn btn-primary mt-3">Start Verification</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Establish a WebSocket connection
+        var socket = io();
+
+        // Trigger verification process when the page loads
+        window.onload = function() {
+            document.getElementById('startVerificationBtn').onclick = function() {
+                socket.emit('start_verification', { ppoNo: 5630 }); // Replace employeeId with the actual employee ID
+            };
+        };
+
+        // Handle 'verification_success' event
+        socket.on('verification_success', function(data) {
+            var verificationResult = data['verification_result'];
+            var message = verificationResult['message'];
+
+            document.getElementById('verificationStatus').innerHTML = "<p class='text-success'>" + message + "</p>";
+            console.log("Verification successful");
+        });
+
+        // Handle 'verification_failed' event
+        socket.on('verification_failed', function(data) {
+            var verificationResult = data['verification_result'];
+            var message = verificationResult['message'];
+
+            document.getElementById('verificationStatus').innerHTML = "<p class='text-danger'>" + message + "</p>";
+            console.log("Verification failed");
+        });
+
+        // Handle 'verification_in_progress' event
+        socket.on('verification_in_progress', function(data) {
+            var message = data['result_status'];
+
+            document.getElementById('verificationStatus').innerHTML = "<p class='text-warning'>" + message + "</p>";
+            console.log("Verification in progress");
+        });
+    </script>
+</body>
+</html>

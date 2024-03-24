@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>:: Welcome to Face Recognition tool :: Powered by PMC ::</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <style>
+            
+*{ margin: 0px; padding: 0px;}
+body{ font-family: "Roboto"; font-size: 14px;}
+.logoWrapper{ margin: -15px  -15px 15px  -15px; display: flex; align-items: center; justify-content: space-between; background: #f5f5f5; padding: 15px;}
+.logo img{ max-height: 110px;}
+.wrapper{ min-height: 100vh; width: 580px; padding: 15px; margin: auto; box-shadow: 0px 0px 2px #ccc;}
+.details{ padding: 15px 0px;}
+.details p{ padding-bottom: 15px; margin: 0px;}
+.details p label{ display: inline-block; width: 120px;}
+.instruction{ background: #fbfbfb; padding: 20px; margin: 0px -15px 15px;}
+.instruction h4{ margin-bottom: 15px; font-size: 21px;}
+.instruction ul{ margin: 0px; padding: 0px;}
+.instruction ul li{ display: block; padding-bottom: 25px; position: relative; padding-left: 40px;}
+.instruction ul li span{ color: #fff; font-weight: bold; background-color: #17a2b8; position: absolute; left: 0px; padding: 0px; display: inline-block; width: 30px; height: 30px; margin-right: 15px; text-align: center; line-height: 30px; border-radius: 100%;}
+.logo_desc h3{ font-size: 21px; font-weight: bold;}
+
+#video-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+#video-feed {
+    border: 2px solid #333;
+    width:100%;
+    height:auto;
+}
+</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="logoWrapper">
+            <div class="logo"><img src="./../images/logo.png"></div>
+            <div class="logo_desc">
+                <h3>PMC - Face Recognition Tool</h3>
+                <p><strong>Verification History</strong></p>
+            </div>
+        </div>
+
+
+
+        <div id="historyContainer">
+            <table id="historyTable" class="table table-hovered">
+                <thead>
+                    <tr>
+                        <th>Employee Code</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Verification Time</th>
+                        <th>Verification Image</th>
+                        <th>Verification Status</th>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                    
+                </tbody>
+            </table>
+        </div>
+
+       
+    </div>
+
+    <script>
+
+        var pathname = new URL(window.location).pathname;
+        const ppoNo = pathname.split("/")?.[2]
+        // Example POST method implementation:
+async function postData(url = "", data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
+  
+  postData("/get_verification_history", { ppoNo: ppoNo }).then((data) => {
+    console.log(data); // JSON data parsed by `data.json()` call
+
+    if (data.length > 0) {
+
+        var temp = "";
+        data.forEach((itemData) => {
+          temp += "<tr>";
+          temp += "<td>" + itemData.ppoNo + "</td>";
+          temp += "<td>" + itemData.firstName + "</td>";
+          temp += "<td>" + itemData.lastName + "</td>";
+          temp += "<td>" + itemData.ver_time + "</td></tr>";
+          temp += "<td>" + itemData.ver_img_path + "</td>";
+          temp += "<td>" + itemData.ver_status + "</td>";
+          
+        });
+        document.getElementById('data').innerHTML = temp;
+    }
+  });
+  
+
+        
+
+        
+    </script>
+</body>
+
+</html>

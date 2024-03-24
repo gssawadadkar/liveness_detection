@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Add your head content here -->
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Other wrapper content -->
+        
+        {% if result_status == "Verification Successful" %}
+            <div class="result-container">
+                <h2>Verification Successful!</h2>
+                <p>The employee with the code {{ EmpCode }} is identified as {{ employee_name }}.</p>
+            </div>
+        {% else %}
+            <div class="result-container">
+                <h2>Verification Failed</h2>
+                <p>{{ result_status }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>
