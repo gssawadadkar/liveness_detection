@@ -1,4 +1,5 @@
 ﻿absl-py==2.1.0
+pip==24.0
 aniso8601==9.0.1
 asttokens==2.4.1
 astunparse==1.6.3
