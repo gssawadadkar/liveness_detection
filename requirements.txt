@@ -20,7 +20,7 @@ cvzone==1.6.1
 cycler==0.12.1
 debugpy==1.8.0
 decorator==5.1.1
--e git+https://github.com/serengil/deepface.git@35025cdf6e4e2fc0642b890dc7dd589b7cb37205#egg=deepface
+
 dlib @ file:///C:/Users/gssaw/inten/dlib-19.22.99-cp39-cp39-win_amd64.whl#sha256=0fd828405c77af2df1ff6a09964a8ba7f14838c538d9017046804f353e9b4bc2
 dm-tree==0.1.8
 exceptiongroup==1.2.0
