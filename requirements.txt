@@ -20,7 +20,7 @@ cvzone==1.6.1
 cycler==0.12.1
 debugpy==1.8.0
 decorator==5.1.1
-dlib-19.22.99-cp39-cp39-win_amd64.whl
+dlib==19.22.99
 dm-tree==0.1.8
 exceptiongroup==1.2.0
 executing==2.0.1
